@@ -1,0 +1,8 @@
+# To start the app, run:
+# streamlit run src/main.py
+pip install -r requirements.txt
+cd src
+python preprocess.py
+streamlit run main.py
+
+streamlit run src/app.py

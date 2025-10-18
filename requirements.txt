@@ -1,0 +1,9 @@
+streamlit==1.44.1
+pandas==2.2.3
+scikit-learn==1.6.1
+nltk==3.9.1
+joblib==1.4.2
+faiss-cpu
+transformers
+sentence-transformers
+numpy
