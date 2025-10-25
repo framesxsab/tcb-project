@@ -1,3 +1,14 @@
+# Python Virtual Environments
+.venv/
 venv/
+
+# Generated files
+*.npy
+
+# Large data files
+Music.csv
+spotify_millsongdata.csv
+
+# Python cache
 __pycache__/
 *.pyc
