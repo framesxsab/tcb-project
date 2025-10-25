@@ -7,3 +7,7 @@ faiss-cpu
 transformers
 sentence-transformers
 numpy
+torch
+Pillow
+requests
+kagglehub

@@ -68,6 +68,9 @@ class ImageMusicRecommender:
             image = None
             if str(image_path).startswith('http'):
                 try:
+                    # url se leke yeh analyse karega pehle download karega image then process karega and open  
+                    # karke image object banayega
+                    # then uske baad feature extract karega and return karega uske output
                     response = requests.get(image_path, stream=True, timeout=10, verify=False) # Added verify=False
                     response.raise_for_status()
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp:
@@ -100,20 +103,26 @@ class ImageMusicRecommender:
                 return None
 
             inputs = self.processor(images=image, return_tensors="pt")
-            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            inputs = {k: v.to(self.device) for k, v in inputs.items()} 
 
             features = self.clip_model.get_image_features(**inputs)
             features = features / features.norm(p=2, dim=-1, keepdim=True)
+            # features ko normalize kar raha hai taaki unit length pe aa jaye
+            # isse similarity comparisons mein madad milegi 
 
             return features.cpu().numpy()
 
         except Exception as e:
             #  unexpected errors during feature extraction
+            # mostly network issues or file corruption ke karan se hi hota hai 
             logging.error(f"✗ Unexpected error during image feature extraction for {image_path}: {e}")
             return None
 
 
     @torch.no_grad()
+    #The torch.no_grad() context manager in PyTorch disables
+    #  gradient calculation for any computations that occur within its scope.
+    #  This has two key benefits: it saves memory and speeds up computations.
     def _get_text_embeddings(self, texts: List[str], batch_size: int = 32) -> Optional[np.ndarray]:
         """Extract normalized text embeddings in batches using CLIP text encoder."""
         if self.clip_model is None or self.processor is None:
@@ -125,7 +134,7 @@ class ImageMusicRecommender:
         try:
             for i in range(0, len(texts), batch_size):
                 batch = texts[i:i + batch_size]
-                # Handle potential None or non-string values in batch
+                # basically yeh ensure karega ki agar koi null value ya non-string value aajaye to wo error na de
                 batch = [str(t) if t is not None else '' for t in batch]
                 inputs = self.processor(text=batch, return_tensors="pt",
                                        padding=True, truncation=True, max_length=77)
@@ -133,6 +142,7 @@ class ImageMusicRecommender:
 
                 embeddings = self.clip_model.get_text_features(**inputs)
                 embeddings = embeddings / embeddings.norm(p=2, dim=-1, keepdim=True)
+                # Normalize the embeddings and usko unit length pe le aana
                 all_embeddings.append(embeddings.cpu())
 
             return torch.cat(all_embeddings, dim=0).numpy()
@@ -290,7 +300,8 @@ if image_source == "Upload Image":
         with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
             tmp_file.write(uploaded_file.getvalue())
             image_path = tmp_file.name
-    st.image(uploaded_file, caption="Uploaded Image.", use_container_width=True)
+        # Only display the image if it was successfully uploaded
+        st.image(uploaded_file, caption="Uploaded Image.", use_container_width=True)
 
 elif image_source == "Enter Image URL":
     image_url = st.text_input("Enter Image URL:")
