@@ -25,7 +25,7 @@ class ImageMusicRecommender:
     """Optimized image-to-music recommendation system using CLIP embeddings and FAISS."""
 
     # --- CHANGED: Default dataset_path is now "music.csv" ---
-    def __init__(self, clip_model_name: str = "openai/clip-vit-base-patch32", embeddings_path: str = "song_embeddings.npy", dataset_path: str = "music.csv"):
+    def __init__(self, clip_model_name: str = "openai/clip-vit-base-patch32", embeddings_path: str = "song_embeddings.npy", dataset_path: str = "Music.csv"):
         """Initialize the recommender with CLIP model, dataset, and FAISS index."""
         self.clip_model_name = clip_model_name
         self.clip_model = None
