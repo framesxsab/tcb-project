@@ -5,9 +5,8 @@ venv/
 # Generated files
 *.npy
 
-# Large data files
-Music.csv
-spotify_millsongdata.csv
+# Old/large data files
+src/spotify_millsongdata.csv
 
 # Python cache
 __pycache__/
